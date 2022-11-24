@@ -1,7 +1,7 @@
 import {getAllStudents} from "./client";
 import './App.css';
 import React, {useEffect, useState} from "react";
-import {Breadcrumb, Layout, Menu} from 'antd';
+import {Table, Breadcrumb, Layout, Menu, Spin, Empty} from 'antd';
 import {
     DesktopOutlined,
     FileOutlined,
@@ -11,6 +11,39 @@ import {
 } from '@ant-design/icons';
 
 const {Header, Content, Footer, Sider} = Layout;
+const items = [
+    getItem('Option 1', '1', <PieChartOutlined/>),
+    getItem('Option 2', '2', <DesktopOutlined/>),
+    getItem('User', 'sub1', <UserOutlined/>, [
+        getItem('Tom', '3'),
+        getItem('Bill', '4'),
+        getItem('Alex', '5'),
+    ]),
+    getItem('Team', 'sub2', <TeamOutlined/>, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
+    getItem('Files', '9', <FileOutlined/>),
+];
+const columns = [
+    {
+        title: 'Id',
+        dataIndex: 'id',
+        key: 'id',
+    },
+    {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+    },
+    {
+        title: 'Email',
+        dataIndex: 'email',
+        key: 'email',
+    },
+    {
+        title: 'Gender',
+        dataIndex: 'gender',
+        key: 'gender',
+    },
+];
 
 function getItem(label, key, icon, children) {
     return {
@@ -21,34 +54,43 @@ function getItem(label, key, icon, children) {
     };
 }
 
-const items = [
-    getItem('Option 1', '1', <PieChartOutlined />),
-    getItem('Option 2', '2', <DesktopOutlined />),
-    getItem('User', 'sub1', <UserOutlined />, [
-        getItem('Tom', '3'),
-        getItem('Bill', '4'),
-        getItem('Alex', '5'),
-    ]),
-    getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-    getItem('Files', '9', <FileOutlined />),
-];
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
     const [students, setStudents] = useState([]);
+    const [fetching, setFetching] = useState(true);
+
     const fetchStudents = () =>
         getAllStudents()
             .then(res => res.json())
-            .then(data => setStudents(data));
+            .then(data => {
+                setStudents(data);
+                setFetching(false);
+            });
 
     useEffect(() => {
         console.log("comp moumt");
         fetchStudents();
     }, [])
 
-    if (students.length <= 0) {
-        return "no data";
+
+    const renderStudents = () => {
+        if(fetching){
+           return <Spin />
+        }
+        if (students.length <= 0) {
+            return <Empty />;
+        }
+        return <Table
+            rowKey={(student)=>student.id}
+            dataSource={students}
+            columns={columns}
+            bordered title={()=> 'Students'}
+            pagination={{pageSize:50}}
+            scroll={{y:240}}
+        />
     }
+
     return <Layout
         style={{
             minHeight: '100vh',
@@ -85,14 +127,14 @@ function App() {
                         minHeight: 360,
                     }}
                 >
-                    Bill is a cat.
+                    {renderStudents()}
                 </div>
             </Content>
             <Footer
                 style={{
                     textAlign: 'center',
                 }}
-            >
+            >By Makar0ha
             </Footer>
         </Layout>
     </Layout>
