@@ -76,7 +76,7 @@ function App() {
 
     const renderStudents = () => {
         if(fetching){
-           return <Spin />
+           return <Spin size="large"/>
         }
         if (students.length <= 0) {
             return <Empty />;
