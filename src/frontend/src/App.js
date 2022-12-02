@@ -9,10 +9,10 @@ import {
     TeamOutlined,
     UserOutlined,
 } from '@ant-design/icons';
-import {deleteStudent, getAllStudents} from "./client";
+import {deleteStudent, editStudent, getAllStudents} from "./client";
 import StudentDrawerForm from "./StudentDrawerForm";
 import TheAvatar from "./TheAvatar";
-import {successNotification} from "./Nottification";
+import {errorNotification, successNotification} from "./Nottification";
 
 const {Header, Content, Footer, Sider} = Layout;
 const items = [
@@ -30,6 +30,19 @@ const items = [
 const removeStudent = (studentId, fetchStudents) => {
     deleteStudent(studentId).then(() => {
         successNotification("Student deleted", `Student with id - ${studentId} was deleted`);
+        fetchStudents();
+    }).catch(err => {
+        console.log(err.response);
+        err.response.json().then(res => {
+            console.log(res);
+            errorNotification("There was an issue", `${res.message} [${res.status}] [${res.error}]`);
+        });
+    });
+}
+
+const changeStudent = (studentId, fetchStudents) => {
+    editStudent(studentId).then(() => {
+        successNotification("Student changed", `Student with id - ${studentId} was changed`);
         fetchStudents();
     });
 }
@@ -74,9 +87,17 @@ const columns = fetchStudents => [
                     okText="Yes"
                     cancelText="No"
                 >
-                    <Radio.Button>Delete</Radio.Button>
+                    <Radio.Button value="large">Delete</Radio.Button>
                 </Popconfirm>
-                <Radio.Button value="small">Edit</Radio.Button>
+                <Popconfirm
+                    placement="topLeft"
+                    title={`Are you sure to change data for ${student.name}?`}
+                    onConfirm={() => changeStudent(student.id, fetchStudents)}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <Radio.Button value="small">Edit</Radio.Button>
+                </Popconfirm>
 
 
             </Radio.Group>
@@ -105,7 +126,17 @@ function App() {
             .then(res => res.json())
             .then(data => {
                 setStudents(data);
-                setFetching(false);
+
+            })
+            .catch(err => {
+                console.log(err.response);
+                err.response.json().then(res => {
+                    console.log(res);
+                    errorNotification("There was an issue", `${res.message} [${res.status}] [${res.error}]`);
+                });
+            })
+            .finally(() => {
+                setFetching(false)
             });
 
     useEffect(() => {
