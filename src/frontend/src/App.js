@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useEffect, useState} from "react";
-import {Table, Breadcrumb, Layout, Menu, Spin, Empty, Button} from 'antd';
+import {Table, Breadcrumb, Layout, Menu, Spin, Empty, Button, Badge, Tag, Radio, Popconfirm} from 'antd';
 import {
     DesktopOutlined,
     FileOutlined,
@@ -9,8 +9,10 @@ import {
     TeamOutlined,
     UserOutlined,
 } from '@ant-design/icons';
-import {getAllStudents} from "./client";
+import {deleteStudent, getAllStudents} from "./client";
 import StudentDrawerForm from "./StudentDrawerForm";
+import TheAvatar from "./TheAvatar";
+import {successNotification} from "./Nottification";
 
 const {Header, Content, Footer, Sider} = Layout;
 const items = [
@@ -24,7 +26,21 @@ const items = [
     getItem('Team', 'sub2', <TeamOutlined/>, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
     getItem('Files', '9', <FileOutlined/>),
 ];
-const columns = [
+
+const removeStudent = (studentId, fetchStudents) => {
+    deleteStudent(studentId).then(() => {
+        successNotification("Student deleted", `Student with id - ${studentId} was deleted`);
+        fetchStudents();
+    });
+}
+
+const columns = fetchStudents => [
+    {
+        title: '',
+        dataIndex: 'avatar',
+        key: 'avatar',
+        render: (text, student) => <TheAvatar name={student.name}/>
+    },
     {
         title: 'Id',
         dataIndex: 'id',
@@ -45,6 +61,26 @@ const columns = [
         dataIndex: 'gender',
         key: 'gender',
     },
+    {
+        title: 'Action',
+        dataIndex: 'action',
+        key: 'action',
+        render: (text, student) =>
+            <Radio.Group>
+                <Popconfirm
+                    placement="topLeft"
+                    title={`Are you sure to delete ${student.name}?`}
+                    onConfirm={() => removeStudent(student.id, fetchStudents)}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <Radio.Button>Delete</Radio.Button>
+                </Popconfirm>
+                <Radio.Button value="small">Edit</Radio.Button>
+
+
+            </Radio.Group>
+    }
 ];
 
 function getItem(label, key, icon, children) {
@@ -62,6 +98,7 @@ function App() {
     const [students, setStudents] = useState([]);
     const [fetching, setFetching] = useState(true);
     const [showDrawer, setShowDrawer] = useState(false);
+
 
     const fetchStudents = () =>
         getAllStudents()
@@ -94,13 +131,23 @@ function App() {
             <Table
                 rowKey={(student) => student.id}
                 dataSource={students}
-                columns={columns}
+                columns={columns(fetchStudents)}
                 bordered title={() =>
-                <Button
-                    onClick={()=> setShowDrawer(!showDrawer)}
-                    type="primary" shape="round" icon={<PlusOutlined/>} size="small">
-                    Add new Student
-                </Button>
+                <>
+                    <Button
+
+                        onClick={() => setShowDrawer(!showDrawer)}
+                        type="primary" shape="round" icon={<PlusOutlined/>} size="small">
+                        Add new Student
+                    </Button>
+                    <div style={{marginLeft: "10px", float: "right"}}>
+                        <Tag style={{marginLeft: "10px"}}>Number of students</Tag>
+                        <Badge
+                            className="site-badge-count-109"
+                            count={students.length}
+                        />
+                    </div>
+                </>
             }
                 pagination={{pageSize: 50}}
                 scroll={{y: 560}}

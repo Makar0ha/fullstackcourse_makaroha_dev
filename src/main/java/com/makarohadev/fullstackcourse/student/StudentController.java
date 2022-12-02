@@ -2,8 +2,6 @@ package com.makarohadev.fullstackcourse.student;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -19,6 +17,15 @@ public class StudentController {
     @PostMapping
     public void addStudent(@RequestBody Student student){
         studentService.addStudent(student);
+    }
+    @DeleteMapping("{studentId}")
+    public void deleteStudent(@PathVariable Long studentId){
+        System.out.println(studentId);
+        studentService.deleteStudent(studentId);
+    }
+    @PutMapping
+    public List<Student> editStudent(@RequestBody Student student){
+        return studentService.editStudent(student);
     }
 
 }
