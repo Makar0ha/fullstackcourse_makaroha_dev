@@ -97,9 +97,6 @@
                             <from>
                                 <image>openjdk:17-slim</image>
                             </from>
-                            <to>
-                                <image>docker.io/stari4ok/${app.image.name}:${app.image.tag}</image>
-                            </to>
                             <container>
                                 <ports>
                                     <port>8080</port>
@@ -152,9 +149,6 @@
                             <from>
                                 <image>openjdk:17-slim</image>
                             </from>
-                            <to>
-                                <image>stari4ok/${app.image.name}:${app.image.tag}</image>
-                            </to>
                             <container>
                                 <ports>
                                     <port>8080</port>
