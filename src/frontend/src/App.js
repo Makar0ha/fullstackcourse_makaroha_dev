@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useEffect, useState} from "react";
-import {Table, Breadcrumb, Layout, Menu, Spin, Empty, Button, Badge, Tag, Radio, Popconfirm} from 'antd';
+import {Table, Breadcrumb, Layout, Menu, Spin, Empty, Button, Badge, Tag, Radio, Popconfirm, Image} from 'antd';
 import {
     DesktopOutlined,
     FileOutlined,
@@ -242,7 +242,12 @@ function App() {
                 style={{
                     textAlign: 'center',
                 }}
-            >By Makar0ha
+            >
+                <Image
+                    width={75}
+                    src="https://user-images.githubusercontent.com/77810752/205652652-d1239b3b-75b3-4b8f-8656-b20765b3e9f9.png"
+                />
+                <div>Makar0ha </div>
             </Footer>
         </Layout>
     </Layout>

@@ -174,7 +174,7 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <to>
-                                        <image>docker.io/stari4ok/${app.image.name}:latest</image>
+                                        <image>stari4ok/${app.image.name}:latest</image>
                                     </to>
                                 </configuration>
                                 <goals>
