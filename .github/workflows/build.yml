@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  POSTGRESQL_VERSION: 42.5.1
+  POSTGRESQL_VERSION: 42.3.7
   POSTGRESQL_DB: makaroha
   POSTGRESQL_USER: postgres
   POSTGRESQL_PASSWORD: password
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:42.5.1
+        image: postgres:42.3.3
         env:
           POSTGRES_DB: ${{ env.POSTGRESQL_DB }}
           POSTGRES_USER: ${{ env.POSTGRESQL_USER }}
