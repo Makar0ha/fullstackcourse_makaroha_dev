@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   backend:
-    image: "stari4ok/fullstackcourse:5.12.2022.23.37.54"
+    image: "stari4ok/fullstackcourse:6.12.2022.20.46.32"
     ports:
       - "80:8080"
     restart: "always"
