@@ -19,9 +19,7 @@ public class StudentService {
     }
 
     public void addStudent(Student student) {
-        System.out.println(student.getEmail());
         if (studentRepository.findByEmail(student.getEmail()).isPresent()){
-            System.out.println(1);
             throw new BadRequestException("Student with email " + student.getEmail() + " exists");
         }
         studentRepository.save(student);
