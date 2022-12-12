@@ -26,8 +26,9 @@ public class StudentController {
         studentService.deleteStudent(studentId);
     }
     @PutMapping
-    public List<Student> editStudent(@RequestBody Student student){
-        return studentService.editStudent(student);
+    public void editStudent(@Valid @RequestBody Student student){
+        System.out.println(student);
+        studentService.editStudent(student);
     }
 
 }

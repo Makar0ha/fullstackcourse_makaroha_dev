@@ -4,8 +4,6 @@ import com.makarohadev.fullstackcourse.student.exception.BadRequestException;
 import com.makarohadev.fullstackcourse.student.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityExistsException;
 import java.util.List;
 
 @Service
@@ -32,18 +30,18 @@ public class StudentService {
         studentRepository.deleteById(studentId);
     }
 
-    public List<Student> editStudent(Student student) {
+    public void editStudent(Student student) {
         Student studentChange = studentRepository.findById(student.getId()).orElse(null);
         if (studentChange == null) {
-            throw new EntityExistsException("Student with id " + student.getId() + " doesn't exist");
+            throw new NotFoundException("Student with id " + student.getId() + " doesn't exist");
         }
-        studentRepository.findByEmail(student.getEmail())
-                .orElseThrow(() -> new IllegalStateException("Student with email " + student.getEmail() + " exists"));
+        if(studentRepository.findByEmail(student.getEmail()).isPresent() && !student.getEmail().equals(studentChange.getEmail())){
+            throw new  BadRequestException("Student with email " + student.getEmail() + " exists");
+        }
 
         studentChange.setEmail(student.getEmail());
         studentChange.setName(student.getName());
         studentChange.setGender(student.getGender());
         studentRepository.save(studentChange);
-        return studentRepository.findAll();
     }
 }
