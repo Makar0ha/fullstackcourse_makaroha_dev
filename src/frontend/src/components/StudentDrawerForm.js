@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Drawer, Input, Col, Select, Form, Row, Button, Spin} from 'antd';
 import {addNewStudent} from "./client";
 import {LoadingOutlined} from "@ant-design/icons";
-import {errorNotification, successNotification} from "./Nottification";
+import {errorNotification, successNotification} from "./nottification";
 
 const {Option} = Select;
 const antIcon = <LoadingOutlined
@@ -19,18 +19,14 @@ function StudentDrawerForm({showDrawer, setShowDrawer, fetchStudents}) {
 
     const onFinish = student => {
         setSubmitting(true);
-        console.log(JSON.stringify(student, null, 2));
         addNewStudent(student)
             .then(() => {
-                console.log("student added");
                 onCLose();
                 successNotification("Student success added", `${student.name} - ${student.email} was added to the system`);
                 fetchStudents();
             })
             .catch(err => {
-                console.log(err.response);
                 err.response.json().then(res => {
-                    console.log(res);
                     errorNotification("There was an issue", `${res.message} [${res.status}] [${res.error}]`);
                 });
             })
@@ -86,7 +82,7 @@ function StudentDrawerForm({showDrawer, setShowDrawer, fetchStudents}) {
                 <Col span={12}>
                     <Form.Item
                         name="gender"
-                        label="gender"
+                        label="Gender"
                         rules={[{required: true, message: 'Please select a gender'}]}
                     >
                         <Select placeholder="Please select a gender">
