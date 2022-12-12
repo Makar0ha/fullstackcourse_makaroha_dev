@@ -75,10 +75,11 @@ public class StudentIT {
                 name,
                 email,
                 Gender.values()[randomGenderPick]);
-        mockMvc.perform(post("/api/v1/students")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(student)))
-                .andExpect(status().isOk());
+        studentRepository.save(student);
+//        mockMvc.perform(post("/api/v1/students")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(student)))
+//                .andExpect(status().isOk());
         MvcResult getStudentResult = mockMvc.perform(get("/api/v1/students")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -102,5 +103,54 @@ public class StudentIT {
         resultActions.andExpect(status().isOk());
         boolean exists = studentRepository.existsById(studentId);
         assertThat(exists).isFalse();
+    }
+
+    @Test
+    void canEditStudent() throws Exception {
+        //given
+        String name = String.format("%s", faker.name().username().toLowerCase());
+        String email = name + "@mail.com";
+        Student newStudent = new Student(
+                name,
+                email,
+                Gender.MALE);
+        Student student = studentRepository.save(newStudent);
+
+        String newName = String.format("%s", faker.name().username().toLowerCase());
+        String newEmail = newName + "@mail.com";
+        Student changedStudent = new Student(
+                student.getId(),
+                newName,
+                newEmail,
+                Gender.OTHER);
+
+        mockMvc.perform(put("/api/v1/students")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(changedStudent)))
+                .andExpect(status().isOk());
+        MvcResult getStudentResult = mockMvc.perform(get("/api/v1/students")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        String contentAsString = getStudentResult.getResponse().getContentAsString();
+
+        List<Student> students = objectMapper.readValue(
+                contentAsString,
+                new TypeReference<>() {
+                });
+
+        long studentId = students.stream()
+                .filter(s -> s.getEmail().equals(changedStudent.getEmail()))
+                .map(Student::getId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Student with email: " + email + " doesn't exist"));
+
+        //when
+        //then
+        assertThat(student.getId()).isEqualTo(studentId);
+        assertThat(student.getName()).isNotEqualTo(changedStudent.getName());
+        assertThat(student.getEmail()).isNotEqualTo(changedStudent.getEmail());
+        assertThat(student.getGender()).isNotEqualTo(changedStudent.getGender());
+        assertThat(students).contains(changedStudent);
     }
 }
