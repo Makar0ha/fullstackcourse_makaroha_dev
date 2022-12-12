@@ -27,8 +27,6 @@ const items = [
     getItem('Files', '9', <FileOutlined />),
 ];
 
-
-
 function getItem(label, key, icon, children) {
     return {
         key,
@@ -37,7 +35,6 @@ function getItem(label, key, icon, children) {
         label,
     };
 }
-
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -65,18 +62,12 @@ function App() {
         fetchStudents();
     }, [])
 
-
     const renderStudents = () => {
         if (fetching) {
             return <Spin size="large" />
         }
         if (students.length <= 0) {
             return <>
-                <Button
-                    onClick={() => setShowDrawer(!showDrawer)}
-                    type="primary" shape="round" icon={<PlusOutlined />} size="small">
-                    Add New Student
-                </Button>
                 <StudentDrawerForm
                     showDrawer={showDrawer}
                     setShowDrawer={setShowDrawer}
@@ -129,7 +120,6 @@ function App() {
                 </Breadcrumb>
                 <>
                     <Button
-
                         onClick={() => setShowDrawer(!showDrawer)}
                         type="primary" shape="round" icon={<PlusOutlined />} size="small">
                         Add new Student
