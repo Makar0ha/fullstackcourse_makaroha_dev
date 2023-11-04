@@ -50,7 +50,7 @@ const changeStudent = (student, showEditStudentDrawer, setShowEditStudentDrawer,
 
 }
 
-const columns = (fetchStudents, showEditStudentDrawer, setShowEditStudentDrawer, setPickStudent) => [
+const columns = ({fetchStudents, showEditStudentDrawer, setShowEditStudentDrawer, setPickStudent}) => [
     {
         title: '',
         dataIndex: 'avatar',

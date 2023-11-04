@@ -2,6 +2,7 @@ import { Badge, Form, Input, Popconfirm, Radio, Select, Table, Tag, Typography }
 import React, { useEffect, useState } from "react";
 import { deleteStudent, editStudent } from "./client";
 import { errorNotification, successNotification } from "./nottification";
+import { columns } from "./structureOfTable";
 import TheAvatar from "./TheAvatar";
 
 
@@ -140,104 +141,25 @@ const StudentsTable = ({ students, fetchStudents }) => {
             })
         }
     }
-    const columns = [
-        {
-            title: '',
-            dataIndex: 'avatar',
-            key: 'avatar',
-            render: (text, record) => <TheAvatar name={record.name} />
-        },
-        {
-            title: 'Id',
-            dataIndex: 'id',
-            key: 'id',
-        },
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-            editable: true
-        },
-        {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
-            editable: true,
-        },
-        {
-            title: 'Gender',
-            dataIndex: 'gender',
-            key: 'gender',
-            editable: true,
-        },
-        {
-            title: 'Action',
-            dataIndex: 'action',
-            key: 'action',
-            render: (_, record) => {
-                const editable = isEditing(record);
-                return editable ? (
-                    <span>
-                        <Typography.Link
-                            onClick={() => save(record.id)}
-                            style={{
-                                marginRight: 8,
-                            }}
-                        >
-                            Save
-                        </Typography.Link>
 
-                        <Typography.Link>
-                            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                                <>Cancel</>
-                            </Popconfirm>
-                        </Typography.Link>
-                    </span>
-                ) : (
-                    <Radio.Group
-                        optionType="button"
-                    >
-                        <Popconfirm
-                            placement="topLeft"
-                            title={`Are you sure to delete ${record.name}?`}
-                            onConfirm={() => { removeStudent(record.id, fetchStudents) }}
-                            okText="Yes"
-                            cancelText="No"
-                        >
-                            <Radio.Button value="delete">Delete</Radio.Button>
-                        </Popconfirm>
-                        <Popconfirm
-                            placement="topLeft"
-                            title={`Are you sure to change data for ${record.name}?`}
-                            onConfirm={() => edit(record)}
-                            okText="Yes"
-                            cancelText="No"
-                            disabled={editingId !== ''}
-                        >
-                            <Radio.Button value="edit">Edit</Radio.Button>
-                        </Popconfirm>
-                    </Radio.Group>
+    const props = [fetchStudents, removeStudent, editingId, isEditing, save, edit, cancel];
 
-                );
-            },
-        },
-    ];
-
-    const mergedColumns = columns.map((col) => {
-        if (!col.editable) {
-            return col;
-        }
-        return {
-            ...col,
-            onCell: (record) => ({
-                record,
-                inputType: col.dataIndex === 'gender' ? 'gender' : 'text',
-                dataIndex: col.dataIndex,
-                title: col.title,
-                editing: isEditing(record),
-            }),
-        };
-    });
+    const mergedColumns = columns(...props)
+        .map((col) => {
+            if (!col.editable) {
+                return col;
+            }
+            return {
+                ...col,
+                onCell: (record) => ({
+                    record,
+                    inputType: col.dataIndex === 'gender' ? 'gender' : 'text',
+                    dataIndex: col.dataIndex,
+                    title: col.title,
+                    editing: isEditing(record),
+                }),
+            };
+        });
     return <Form form={form} component={false}>
         <Table
             rowKey={(record) => record.id}
@@ -248,7 +170,7 @@ const StudentsTable = ({ students, fetchStudents }) => {
             }}
 
             dataSource={data}
-            columns={mergedColumns}
+            columns={mergedColumns(props)}
             rowClassName="editable-row"
             pagination={{ pageSize: 50 }}
             scroll={{ y: 560 }}

@@ -1,3 +1,4 @@
+
 .App {
   text-align: center;
 }
@@ -44,3 +45,14 @@
   box-shadow: 0 0 0 1px #d9d9d9 inset;
 
 }
+
+
+.login-form {
+  position: absolute; /* or absolute */
+  top: 40%;
+  left: 43%;
+  /* width: 250px;
+  height:150px;
+  margin: -100px 0 0 -150px; */
+}
+

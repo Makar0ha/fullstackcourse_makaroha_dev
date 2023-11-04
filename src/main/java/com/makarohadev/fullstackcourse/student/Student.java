@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @ToString
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "email")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
